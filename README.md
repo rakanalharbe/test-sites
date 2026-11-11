@@ -4,8 +4,8 @@
 
 | الموقع | الوصف | الرابط |
 |---|---|---|
-| 🦷 مجمع بسمة لطب الأسنان | حجز مواعيد: التخصصات ← الطبيب ← الموعد ← البيانات ← التأكيد | `dental/` |
-| 🍕 فرن الحارة | طلب بيتزا وفطائر: القائمة ← الحجم والإضافات ← السلة ← الدفع عند الاستلام | `pizza/` |
+| 🦷 مجمع بسمة لطب الأسنان | حجز مواعيد: التخصصات ← الطبيب ← الموعد ← البيانات ← التأكيد | `dental-demo/` |
+| 🍕 فرن الحارة | طلب بيتزا وفطائر: القائمة ← الحجم والإضافات ← السلة ← الدفع عند الاستلام | `pizza-demo/` |
 
 لكل موقع صفحة `admin.html`، وهي لوحة تحكم تعرض الحجوزات أو الطلبات المحفوظة في متصفح الزائر (localStorage).
 
@@ -19,5 +19,5 @@
 3. من إعدادات المستودع: **Settings ← Pages ← Source: Deploy from a branch ← main / (root)**.
 4. بعد دقيقة تقريبًا تصبح الروابط:
    - الصفحة الرئيسية: `https://USERNAME.github.io/test-sites/`
-   - العيادة: `https://USERNAME.github.io/test-sites/dental/`
-   - المطعم: `https://USERNAME.github.io/test-sites/pizza/`
+   - العيادة: `https://USERNAME.github.io/test-sites/dental-demo/`
+   - المطعم: `https://USERNAME.github.io/test-sites/pizza-demo/`
