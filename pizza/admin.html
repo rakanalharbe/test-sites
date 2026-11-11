@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم | فرن الحارة</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="nav">
+  <div class="container">
+    <a href="index.html" class="logo"><span class="logo-mark">🍕</span><span>فرن الحارة<small>لوحة التحكم</small></span></a>
+    <a href="index.html" class="btn btn-light">← العودة للموقع</a>
+  </div>
+</nav>
+<main class="container">
+  <div class="admin-head">
+    <div><h1>إدارة الطلبات</h1><p style="color:var(--muted)">تابع الطلبات وحرّكها بين مراحل التحضير</p></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn btn-light" id="seed">➕ بيانات تجريبية</button><button class="btn btn-light" id="clear">🗑️ مسح الكل</button></div>
+  </div>
+  <div class="kpis" id="kpis"></div>
+  <div class="board" id="board"></div>
+</main>
+<div class="toast" id="toast"></div>
+<script src="data.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const COLS = [
+  { id: 'new', name: '🆕 طلبات جديدة', next: 'قبول وبدء التحضير' },
+  { id: 'prep', name: '👨‍🍳 قيد التحضير', next: 'جاهز / خرج للتوصيل' },
+  { id: 'way', name: '🛵 في الطريق / جاهز', next: 'تم التسليم' },
+  { id: 'done', name: '✅ مكتملة' }
+];
+const ago = iso => { const m = Math.round((Date.now() - new Date(iso)) / 60000); return m < 1 ? 'الآن' : m < 60 ? `منذ ${m} د` : `منذ ${Math.floor(m / 60)} س`; };
+
+function render() {
+  const orders = store.get(ORDERS_KEY, []);
+  const sales = orders.reduce((s, o) => s + o.total, 0);
+  $('#kpis').innerHTML = [
+    ['🧾', '#ffe4d6', orders.length, 'إجمالي الطلبات'],
+    ['🔥', '#fff1c2', orders.filter(o => o.status !== 'done').length, 'طلبات نشطة'],
+    ['💵', '#dcfce7', money(sales), 'المبيعات (عند الاستلام)'],
+    ['📊', '#e0e7ff', money(orders.length ? Math.round(sales / orders.length) : 0), 'متوسط قيمة الطلب']
+  ].map(([i, bg, v, l]) => `<div class="kpi"><span class="ic" style="background:${bg}">${i}</span><div><b>${v}</b><span>${l}</span></div></div>`).join('');
+
+  $('#board').innerHTML = COLS.map(c => {
+    const list = orders.filter(o => o.status === c.id);
+    return `<div class="col"><h3>${c.name}<span>${list.length}</span></h3>${list.map(o => `
+      <div class="o-card">
+        <div class="top"><span dir="ltr">${o.no}</span><em>${money(o.total)}</em></div>
+        <ul>${o.items.map(i => `<li>${i.qty}× ${i.name} <small>(${i.desc})</small></li>`).join('')}</ul>
+        <div class="meta">👤 ${o.name} · <span dir="ltr">${o.phone}</span><br>${o.type === 'delivery' ? `🛵 حي ${o.district}` : '🏪 استلام من الفرع'} · 💵 عند الاستلام · ${ago(o.createdAt)}</div>
+        ${c.next ? `<button class="act" data-no="${o.no}">${c.next} ←</button>` : ''}
+      </div>`).join('') || '<p style="color:var(--muted);text-align:center;font-size:.9rem;margin-top:30px">لا توجد طلبات</p>'}</div>`;
+  }).join('');
+}
+$('#board').onclick = e => {
+  const b = e.target.closest('[data-no]'); if (!b) return;
+  const order = ['new', 'prep', 'way', 'done'];
+  store.set(ORDERS_KEY, store.get(ORDERS_KEY, []).map(o => o.no === b.dataset.no ? { ...o, status: order[order.indexOf(o.status) + 1] } : o));
+  toast('تم تحديث حالة الطلب'); render();
+};
+$('#seed').onclick = () => {
+  const names = ['عبدالرحمن', 'نوف', 'فيصل', 'ريما', 'بندر', 'هند', 'مشعل'];
+  const st = ['new', 'new', 'prep', 'prep', 'way', 'done', 'done'];
+  const demo = names.map((n, i) => {
+    const a = MENU[i * 2 % MENU.length], b = MENU[(i * 3 + 7) % MENU.length];
+    const items = [{ name: a.name, qty: 1 + i % 2, desc: SIZE_LABELS[a.cat][1].n, price: a.prices[1] * (1 + i % 2) }, { name: b.name, qty: 1, desc: SIZE_LABELS[b.cat][2].n, price: b.prices[2] }];
+    const sub = items.reduce((s, x) => s + x.price, 0), del = i % 3 === 2 || sub >= FREE_DELIVERY ? 0 : DELIVERY_FEE;
+    return { no: '#' + (40210 + i * 17), type: i % 3 === 2 ? 'pickup' : 'delivery', name: n, phone: '05' + (55500000 + i * 12345), district: DISTRICTS[i % DISTRICTS.length],
+      address: 'شارع ' + (i + 3), items, sub, del, total: sub + del, status: st[i], createdAt: new Date(Date.now() - i * 9 * 60000).toISOString() };
+  });
+  store.set(ORDERS_KEY, [...store.get(ORDERS_KEY, []), ...demo]); toast('تمت إضافة 7 طلبات تجريبية'); render();
+};
+$('#clear').onclick = () => { if (confirm('هل تريد حذف جميع الطلبات؟')) { store.set(ORDERS_KEY, []); render(); } };
+function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200); }
+render(); setInterval(render, 30000);
+</script>
+</body>
+</html>

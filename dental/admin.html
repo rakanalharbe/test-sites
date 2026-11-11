@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم | مجمع بسمة</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="nav">
+  <div class="container">
+    <a href="index.html" class="logo"><span class="logo-mark">🦷</span><span>مجمع بسمة<small>لوحة التحكم</small></span></a>
+    <a href="index.html" class="btn btn-outline">← العودة للموقع</a>
+  </div>
+</nav>
+
+<main class="container">
+  <div class="admin-head">
+    <div><h1>إدارة الحجوزات</h1><p style="color:var(--muted)">جميع المواعيد المسجلة عبر الموقع</p></div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn btn-outline" id="seed">➕ بيانات تجريبية</button>
+      <button class="btn btn-ghost" id="clear">🗑️ مسح الكل</button>
+    </div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="table-card">
+    <div class="table-tools">
+      <input id="q" placeholder="🔍 ابحث بالاسم أو الجوال أو رقم الحجز">
+      <select id="fDoc"><option value="">كل الأطباء</option></select>
+      <select id="fStatus"><option value="">كل الحالات</option><option value="confirmed">مؤكد</option><option value="done">مكتمل</option><option value="cancelled">ملغي</option></select>
+    </div>
+    <div class="tbl-scroll"><table>
+      <thead><tr><th>رقم الحجز</th><th>المراجع</th><th>الطبيب</th><th>الموعد</th><th>نوع الزيارة</th><th>الرسوم</th><th>الحالة</th><th>إجراءات</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table></div>
+  </div>
+</main>
+<div class="toast" id="toast"></div>
+
+<script src="data.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const ST = { confirmed: 'مؤكد', done: 'مكتمل', cancelled: 'ملغي' };
+$('#fDoc').innerHTML += DOCTORS.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+
+function render() {
+  const all = loadBookings();
+  const today = isoDate(new Date());
+  const revenue = all.filter(b => b.status !== 'cancelled').reduce((s, b) => s + b.fee, 0);
+  $('#kpis').innerHTML = [
+    ['📋', '#e0f2fe', all.length, 'إجمالي الحجوزات'],
+    ['📅', '#dcfce7', all.filter(b => b.date === today && b.status !== 'cancelled').length, 'مواعيد اليوم'],
+    ['✅', '#ccfbf1', all.filter(b => b.status === 'confirmed').length, 'حجوزات مؤكدة'],
+    ['💰', '#fef3c7', revenue.toLocaleString('en') + ' ر.س', 'الإيرادات المتوقعة']
+  ].map(([i, bg, v, l]) => `<div class="kpi"><span class="ic" style="background:${bg}">${i}</span><div><b>${v}</b><span>${l}</span></div></div>`).join('');
+
+  const q = $('#q').value.trim(), fd = $('#fDoc').value, fs = $('#fStatus').value;
+  const list = all.filter(b => (!q || [b.name, b.phone, b.code].some(x => x.includes(q))) && (!fd || b.doc == fd) && (!fs || b.status === fs));
+  $('#rows').innerHTML = list.length ? list.map(b => {
+    const d = docById(b.doc);
+    return `<tr>
+      <td><b dir="ltr">${b.code}</b></td>
+      <td><b>${b.name}</b><br><small style="color:var(--muted)" dir="ltr">${b.phone}</small></td>
+      <td>${d.name}<br><small style="color:var(--muted)">${specById(d.spec).name}</small></td>
+      <td>${fmtDate(b.date, { weekday: 'short', day: 'numeric', month: 'short' })}<br><small style="color:var(--muted)">${fmtTime(b.time)}</small></td>
+      <td>${b.type}</td><td>${b.fee} ر.س</td>
+      <td><span class="status st-${b.status}">${ST[b.status]}</span></td>
+      <td style="white-space:nowrap">${b.status === 'confirmed'
+        ? `<button class="icon-btn ok" data-a="done" data-c="${b.code}">إتمام</button> <button class="icon-btn no" data-a="cancelled" data-c="${b.code}">إلغاء</button>`
+        : '—'}</td></tr>`;
+  }).join('') : `<tr><td colspan="8"><div class="empty"><div>🗓️</div><p>لا توجد حجوزات بعد. احجز موعدًا من الموقع أو أضف بيانات تجريبية.</p></div></td></tr>`;
+}
+
+$('#rows').onclick = e => {
+  const b = e.target.closest('[data-a]'); if (!b) return;
+  saveBookings(loadBookings().map(x => x.code === b.dataset.c ? { ...x, status: b.dataset.a } : x));
+  toast(b.dataset.a === 'done' ? 'تم تحديث الحجز كمكتمل' : 'تم إلغاء الحجز'); render();
+};
+['#q', '#fDoc', '#fStatus'].forEach(s => $(s).addEventListener('input', render));
+
+$('#seed').onclick = () => {
+  const names = ['أحمد السبيعي', 'منى القرني', 'سلطان العنزي', 'لمى الحربي', 'تركي الشمري', 'جود العمري', 'ياسر البقمي', 'دانة الرشيد'];
+  const types = ['كشف أول مرة', 'متابعة', 'حالة طارئة'];
+  const now = new Date();
+  const demo = names.map((n, i) => {
+    const d = DOCTORS[i % DOCTORS.length];
+    const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + (i % 4));
+    if (day.getDay() === 5) day.setDate(day.getDate() + 1);
+    const t = [...SLOTS.morning, ...SLOTS.evening][(i * 5) % 18];
+    return { code: 'BS-' + (482100 + i * 137), doc: d.id, spec: d.spec, date: isoDate(day), time: t, name: n,
+      phone: '05' + String(51234567 + i * 1111111).slice(0, 8), type: types[i % 3], insurance: 'بدون تأمين', fee: d.fee,
+      status: i === 2 ? 'cancelled' : i === 5 ? 'done' : 'confirmed', createdAt: now.toISOString() };
+  });
+  saveBookings([...loadBookings(), ...demo]); toast('تمت إضافة 8 حجوزات تجريبية'); render();
+};
+$('#clear').onclick = () => { if (confirm('هل تريد حذف جميع الحجوزات؟')) { saveBookings([]); render(); } };
+function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2200); }
+render();
+</script>
+</body>
+</html>

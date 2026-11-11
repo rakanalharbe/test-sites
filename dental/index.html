@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مجمع بسمة لطب الأسنان | احجز موعدك</title>
+<meta name="description" content="احجز موعدك في مجمع بسمة لطب الأسنان بسهولة: اختر التخصص والطبيب والموعد المناسب.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦷</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav">
+  <div class="container">
+    <a href="#" class="logo">
+      <span class="logo-mark"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-1.6-1-4.2-1.4-6 .2C3.8 5.1 4.4 9 5.3 11.4c.7 1.9.9 3.9 1.2 5.9.3 2 .8 3.7 2 3.7 1.5 0 1.6-3.4 2.2-5 .3-.8.7-1.2 1.3-1.2s1 .4 1.3 1.2c.6 1.6.7 5 2.2 5 1.2 0 1.7-1.7 2-3.7.3-2 .5-4 1.2-5.9.9-2.4 1.5-6.3-.7-8.2C16.2 1.6 13.6 2 12 3z"/></svg></span>
+      <span>مجمع بسمة<small>لطب الأسنان</small></span>
+    </a>
+    <div class="nav-links">
+      <a href="#top">الرئيسية</a>
+      <a href="#specialties">التخصصات</a>
+      <a href="#doctors">الأطباء</a>
+      <a href="#booking">حجز موعد</a>
+      <a href="#contact">تواصل معنا</a>
+    </div>
+    <a href="#booking" class="btn btn-primary">احجز موعدك</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="container">
+    <div>
+      <span class="badge">⭐ 4.9 تقييم من أكثر من 2,300 مراجع</span>
+      <h1>ابتسامتك تستحق <span>رعاية احترافية</span> بأيدي نخبة الأطباء</h1>
+      <p>نقدّم في مجمع بسمة رعاية متكاملة لصحة الفم والأسنان بأحدث التقنيات. احجز موعدك خلال أقل من دقيقة.</p>
+      <div class="hero-actions">
+        <a href="#booking" class="btn btn-primary">احجز موعدك الآن ←</a>
+        <a href="#doctors" class="btn btn-outline">تعرّف على أطبائنا</a>
+      </div>
+      <div class="stats">
+        <div><b>+15</b><span>سنة خبرة</span></div>
+        <div><b>+12K</b><span>مراجع سعيد</span></div>
+        <div><b>6</b><span>تخصصات دقيقة</span></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-circle">
+        <svg viewBox="0 0 24 24" fill="#fff"><path d="M12 3c-1.6-1-4.2-1.4-6 .2C3.8 5.1 4.4 9 5.3 11.4c.7 1.9.9 3.9 1.2 5.9.3 2 .8 3.7 2 3.7 1.5 0 1.6-3.4 2.2-5 .3-.8.7-1.2 1.3-1.2s1 .4 1.3 1.2c.6 1.6.7 5 2.2 5 1.2 0 1.7-1.7 2-3.7.3-2 .5-4 1.2-5.9.9-2.4 1.5-6.3-.7-8.2C16.2 1.6 13.6 2 12 3z"/></svg>
+      </div>
+      <div class="float-card fc1"><span class="ic" style="background:#dcfce7">✅</span><div><b>حجز فوري</b><small>تأكيد خلال ثوانٍ</small></div></div>
+      <div class="float-card fc2"><span class="ic" style="background:#e0f2fe">🕘</span><div><b>9 ص – 9 م</b><small>من السبت إلى الخميس</small></div></div>
+    </div>
+  </div>
+</header>
+
+<section id="specialties">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">خدماتنا</span>
+      <h2>التخصصات الطبية</h2>
+      <p>اختر التخصص لعرض الأطباء المتاحين فيه</p>
+    </div>
+    <div class="spec-grid" id="specGrid"></div>
+  </div>
+</section>
+
+<section id="doctors" style="background:#fff">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">فريقنا الطبي</span>
+      <h2>نخبة من أمهر الأطباء</h2>
+      <p>أطباء معتمدون بخبرات واسعة في مختلف تخصصات طب الأسنان</p>
+    </div>
+    <div class="filters" id="filters"></div>
+    <div class="doc-grid" id="docGrid"></div>
+  </div>
+</section>
+
+<section id="booking">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">حجز إلكتروني</span>
+      <h2>احجز موعدك في 4 خطوات</h2>
+      <p>اختر الطبيب والوقت المناسب، وأكّد حجزك فورًا</p>
+    </div>
+
+    <div class="booking-wrap">
+      <div class="stepper" id="stepper">
+        <div class="step active"><span class="n">1</span>الطبيب</div>
+        <div class="step"><span class="n">2</span>الموعد</div>
+        <div class="step"><span class="n">3</span>بياناتك</div>
+        <div class="step"><span class="n">4</span>التأكيد</div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="panel show" data-step="1">
+        <h3>اختر التخصص والطبيب</h3>
+        <p class="hint">حدد التخصص المطلوب ثم اختر الطبيب المعالج</p>
+        <span class="label">التخصص</span>
+        <div class="pick-grid" id="bSpecs"></div>
+        <span class="label">الطبيب</span>
+        <div class="pick-grid" id="bDocs"></div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="panel" data-step="2">
+        <h3>اختر اليوم والوقت</h3>
+        <p class="hint" id="docHint"></p>
+        <span class="label">اليوم</span>
+        <div class="dates" id="dates"></div>
+        <span class="label">الوقت المتاح</span>
+        <div id="slots"></div>
+        <div class="legend"><span><i style="background:#fff;border:2px solid #e2e8f0"></i>متاح</span><span><i style="background:#0e7c86"></i>مختار</span><span><i style="background:#f1f5f9"></i>محجوز</span></div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="panel" data-step="3">
+        <h3>بيانات المراجع</h3>
+        <p class="hint">نحتاج بعض البيانات لتأكيد حجزك والتواصل معك</p>
+        <form class="form-grid" id="pForm" novalidate>
+          <div class="field"><label>الاسم الكامل *</label><input id="fName" placeholder="مثال: محمد أحمد"><span class="msg">الرجاء إدخال الاسم الكامل</span></div>
+          <div class="field"><label>رقم الجوال *</label><input id="fPhone" placeholder="05xxxxxxxx" inputmode="numeric" maxlength="10" dir="ltr" style="text-align:right"><span class="msg">رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام</span></div>
+          <div class="field"><label>العمر</label><input id="fAge" type="number" min="1" max="110" placeholder="اختياري"></div>
+          <div class="field"><label>الجنس</label><select id="fGender"><option>ذكر</option><option>أنثى</option></select></div>
+          <div class="field"><label>نوع الزيارة</label><select id="fType"><option>كشف أول مرة</option><option>متابعة</option><option>حالة طارئة</option></select></div>
+          <div class="field"><label>التأمين الطبي</label><select id="fIns"><option>بدون تأمين</option><option>بوبا</option><option>التعاونية</option><option>ميدغلف</option><option>تكافل الراجحي</option></select></div>
+          <div class="field full"><label>ملاحظات (اختياري)</label><textarea id="fNotes" rows="3" placeholder="صف الأعراض أو أي ملاحظات للطبيب"></textarea></div>
+        </form>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="panel" data-step="4">
+        <h3>مراجعة وتأكيد الحجز</h3>
+        <p class="hint">تأكد من صحة البيانات قبل تأكيد الموعد</p>
+        <div class="summary" id="summary"></div>
+        <div class="note">⏰ نرجو الحضور قبل الموعد بـ 15 دقيقة، وإحضار الهوية وبطاقة التأمين إن وُجدت.</div>
+        <label class="check"><input type="checkbox" id="agree"> أوافق على سياسة الإلغاء (يمكن الإلغاء قبل الموعد بـ 24 ساعة)</label>
+      </div>
+
+      <div class="panel-foot">
+        <button class="btn btn-ghost" id="prevBtn" style="visibility:hidden">→ السابق</button>
+        <button class="btn btn-primary" id="nextBtn" disabled>التالي ←</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <a class="logo"><span class="logo-mark">🦷</span><span>مجمع بسمة<small style="color:#94a3b8">لطب الأسنان</small></span></a>
+        <p style="margin-top:14px;max-width:340px">رعاية متكاملة لصحة الفم والأسنان لجميع أفراد العائلة بأحدث الأجهزة وأعلى معايير التعقيم.</p>
+      </div>
+      <div>
+        <h4>تواصل معنا</h4>
+        <ul><li>📍 الرياض، حي النرجس، طريق أنس بن مالك</li><li>📞 920000000</li><li>✉️ info@basma-dental.sa</li></ul>
+      </div>
+      <div>
+        <h4>ساعات العمل</h4>
+        <ul><li>السبت – الخميس: 9:00 ص – 9:00 م</li><li>الجمعة: مغلق</li><li><a href="admin.html" style="color:#5eead4">← لوحة التحكم (للإدارة)</a></li></ul>
+      </div>
+    </div>
+    <div class="copy">© 2026 مجمع بسمة لطب الأسنان — نموذج تجريبي للعرض</div>
+  </div>
+</footer>
+
+<div class="overlay" id="successBox">
+  <div class="success">
+    <div class="check-anim"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+    <h3>تم تأكيد موعدك بنجاح! 🎉</h3>
+    <p>سيصلك تذكير برسالة نصية قبل الموعد</p>
+    <div class="ticket" id="ticket"></div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="window.print()">🖨️ طباعة</button>
+      <button class="btn btn-outline" id="newBooking">حجز جديد</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

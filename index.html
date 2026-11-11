@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مواقع اختبارات | نماذج العرض</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tajawal',sans-serif;background:#0f172a;color:#e2e8f0;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 16px;background-image:radial-gradient(circle at 20% 10%,#1e3a5f 0,transparent 40%),radial-gradient(circle at 80% 90%,#3b1f1f 0,transparent 40%)}
+h1{font-size:clamp(2rem,5vw,3rem);font-weight:800;color:#fff;text-align:center}
+p.sub{color:#94a3b8;margin:8px 0 44px;text-align:center;font-size:1.1rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;width:min(860px,100%)}
+.card{background:#fff;color:#334155;border-radius:24px;overflow:hidden;text-decoration:none;transition:.3s;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-8px);box-shadow:0 30px 60px rgba(0,0,0,.4)}
+.cover{height:170px;display:grid;place-items:center;font-size:5rem}
+.body{padding:24px}
+.body h2{color:#0f172a;font-size:1.4rem}
+.body p{color:#64748b;margin:6px 0 16px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.tags span{background:#f1f5f9;padding:3px 12px;border-radius:999px;font-size:.82rem}
+.go{font-weight:700}
+.links{display:flex;justify-content:space-between;align-items:center}
+.links a{color:#64748b;font-size:.9rem;text-decoration:none}
+.links a:hover{text-decoration:underline}
+footer{margin-top:40px;color:#64748b;font-size:.9rem}
+</style>
+</head>
+<body>
+  <h1>مواقع اختبارات</h1>
+  <p class="sub">نماذج واجهات أمامية تفاعلية للعرض والتقييم</p>
+  <div class="grid">
+    <div class="card">
+      <a href="dental/" class="cover" style="background:linear-gradient(135deg,#0e7c86,#14b8a6)">🦷</a>
+      <div class="body">
+        <h2>مجمع بسمة لطب الأسنان</h2>
+        <p>حجز مواعيد: عرض التخصصات والأطباء، اختيار اليوم والوقت، ثم تأكيد الحجز.</p>
+        <div class="tags"><span>حجز مواعيد</span><span>4 خطوات</span><span>لوحة تحكم</span></div>
+        <div class="links"><a href="dental/" class="go" style="color:#0e7c86">فتح الموقع ←</a><a href="dental/admin.html">لوحة التحكم</a></div>
+      </div>
+    </div>
+    <div class="card">
+      <a href="pizza/" class="cover" style="background:linear-gradient(135deg,#d62828,#f77f00)">🍕</a>
+      <div class="body">
+        <h2>فرن الحارة – بيتزا وفطائر</h2>
+        <p>طلب طعام: القائمة، اختيار الحجم والإضافات، السلة، والدفع عند الاستلام.</p>
+        <div class="tags"><span>طلب أونلاين</span><span>سلة مشتريات</span><span>لوحة تحكم</span></div>
+        <div class="links"><a href="pizza/" class="go" style="color:#d62828">فتح الموقع ←</a><a href="pizza/admin.html">لوحة التحكم</a></div>
+      </div>
+    </div>
+  </div>
+  <footer>واجهات أمامية فقط (HTML · CSS · JavaScript)، والبيانات تُحفظ في المتصفح</footer>
+</body>
+</html>
