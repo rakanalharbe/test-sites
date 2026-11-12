@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تتبع طلبك | فرن الحارة</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍕</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<style>
+.track-page{max-width:640px;margin:40px auto 60px;padding:0 16px}
+.track-head{text-align:center;margin-bottom:26px}
+.track-head h1{color:var(--dark);font-weight:900;font-size:clamp(1.7rem,4vw,2.3rem)}
+.track-head p{color:var(--muted)}
+.search{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:22px;display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end}
+.search .field input{width:100%}
+@media(max-width:600px){.search{grid-template-columns:1fr}}
+.result{margin-top:22px}
+.status-card{background:#fff;border-radius:24px;box-shadow:var(--shadow-lg);padding:28px 24px;animation:pop .35s}
+.st-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:6px}
+.st-top .order-no{margin:0;font-size:1.2rem}
+.badge-st{padding:6px 16px;border-radius:999px;font-weight:800;font-size:.95rem}
+.b-new{background:#fff1c2;color:#92400e}.b-prep{background:#ffe4d6;color:#c2410c}.b-way{background:#dbeafe;color:#1d4ed8}.b-done{background:#dcfce7;color:#15803d}
+.st-msg{color:var(--dark);font-weight:700;font-size:1.15rem;margin:14px 0 4px}
+.st-sub{color:var(--muted);font-size:.95rem}
+.track{margin:26px 0}
+.track .t.cur span{border-color:var(--orange);background:#fff7ed;animation:pulse 1.4s infinite}
+.track .t.cur{color:var(--dark)}
+.bar-line{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin:-4px 0 22px}
+.bar-line i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--red));transition:.6s}
+.info-grid{margin-top:16px}
+.refresh{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:.85rem;margin-top:16px}
+.dot-live{width:8px;height:8px;border-radius:50%;background:var(--ok);animation:pulse 1.4s infinite}
+.not-found{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:34px 20px;text-align:center;color:var(--muted)}
+.not-found div{font-size:3rem}
+.recent{margin-top:18px;text-align:center;color:var(--muted);font-size:.9rem}
+.recent button{background:var(--cream-2);color:var(--dark);font-weight:700;padding:4px 12px;border-radius:999px;margin:4px;direction:ltr}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="container">
+    <a href="index.html" class="logo"><span class="logo-mark">🍕</span><span>فرن الحارة<small>تتبع الطلب</small></span></a>
+    <a href="index.html" class="btn btn-light">← العودة للقائمة</a>
+  </div>
+</nav>
+
+<main class="track-page">
+  <div class="track-head">
+    <h1>🛵 تتبّع طلبك</h1>
+    <p>أدخل رقم الطلب ورقم الجوال لمعرفة حالة طلبك لحظة بلحظة</p>
+  </div>
+
+  <form class="search" id="searchForm" novalidate>
+    <div class="field"><label>رقم الطلب *</label><input id="qNo" placeholder="مثال: 48213" inputmode="numeric" dir="ltr" style="text-align:right"><span class="msg">أدخل رقم الطلب</span></div>
+    <div class="field"><label>رقم الجوال</label><input id="qPhone" placeholder="05xxxxxxxx" maxlength="10" inputmode="numeric" dir="ltr" style="text-align:right"><span class="msg">رقم الجوال لا يطابق الطلب</span></div>
+    <button class="btn btn-primary" type="submit">تتبع ←</button>
+  </form>
+
+  <div class="recent" id="recent"></div>
+  <div class="result" id="result"></div>
+</main>
+
+<div class="toast" id="toast"></div>
+<script src="data.js"></script>
+<script>
+const $ = s => document.querySelector(s);
+const STEPS = {
+  delivery: [['new','✅','تم استلام الطلب'],['prep','👨‍🍳','قيد التحضير'],['way','🛵','في الطريق إليك'],['done','🏠','تم التسليم']],
+  pickup:   [['new','✅','تم استلام الطلب'],['prep','👨‍🍳','قيد التحضير'],['way','🛍️','جاهز للاستلام'],['done','🏪','تم الاستلام']]
+};
+const MSG = {
+  delivery: { new: 'استلمنا طلبك وسيبدأ التحضير خلال لحظات', prep: 'طهاتنا يحضّرون طلبك الآن في الفرن 🔥', way: 'المندوب في الطريق إليك، جهّز المبلغ للدفع عند الاستلام', done: 'تم تسليم طلبك، بالعافية! 😋' },
+  pickup:   { new: 'استلمنا طلبك وسيبدأ التحضير خلال لحظات', prep: 'طهاتنا يحضّرون طلبك الآن في الفرن 🔥', way: 'طلبك جاهز! تفضّل باستلامه من الفرع', done: 'تم استلام طلبك، بالعافية! 😋' }
+};
+const ORDER = ['new','prep','way','done'];
+const clean = v => String(v || '').replace(/\D/g, '');
+let current = null;
+
+$('#qNo').addEventListener('input', e => e.target.value = clean(e.target.value));
+$('#qPhone').addEventListener('input', e => e.target.value = clean(e.target.value));
+
+function find(no, phone) {
+  const o = store.get(ORDERS_KEY, []).find(x => clean(x.no) === no);
+  if (!o) return { err: 'notfound' };
+  if (phone && clean(o.phone) !== phone) return { err: 'phone' };
+  return { o };
+}
+
+function render() {
+  if (!current) return;
+  const { o, err } = find(current.no, current.phone);
+  document.querySelectorAll('.field').forEach(f => f.classList.remove('err'));
+  if (err === 'phone') { $('#qPhone').parentElement.classList.add('err'); $('#result').innerHTML = ''; return; }
+  if (err) {
+    $('#result').innerHTML = `<div class="not-found"><div>🔍</div><h3 style="color:var(--dark)">لم نجد طلبًا بهذا الرقم</h3><p>تأكد من رقم الطلب الظاهر في صفحة تأكيد الطلب</p></div>`;
+    return;
+  }
+  const type = o.type === 'pickup' ? 'pickup' : 'delivery';
+  const idx = Math.max(0, ORDER.indexOf(o.status));
+  const steps = STEPS[type];
+  const badge = steps[idx][2];
+  const mins = type === 'delivery' ? 35 : 20;
+  const eta = new Date(new Date(o.createdAt).getTime() + mins * 60000).toLocaleTimeString('ar-u-nu-latn', { hour: 'numeric', minute: '2-digit' });
+  const placed = new Date(o.createdAt).toLocaleTimeString('ar-u-nu-latn', { hour: 'numeric', minute: '2-digit' });
+  const html = `
+    <div class="status-card">
+      <div class="st-top"><span class="order-no">${o.no}</span><span class="badge-st b-${ORDER[idx]}">${badge}</span></div>
+      <p class="st-msg">${MSG[type][ORDER[idx]]}</p>
+      <p class="st-sub">${idx < 3 ? `${type === 'delivery' ? '⏱️ الوصول المتوقع' : '⏱️ جاهز تقريبًا'}: ${eta}` : `🕘 وقت الطلب: ${placed}`}</p>
+      <div class="track">${steps.map((s, i) => `<div class="t ${i < idx || ORDER[idx] === 'done' ? 'on' : ''} ${i === idx && ORDER[idx] !== 'done' ? 'cur' : ''}"><span>${s[1]}</span>${s[2]}</div>`).join('')}</div>
+      <div class="bar-line"><i style="width:${(idx + 1) / 4 * 100}%"></i></div>
+      <div class="review-list">${o.items.map(i => `<div class="r"><span>${i.qty}× ${i.name} <small style="color:var(--muted)">(${i.desc})</small></span><b>${money(i.price)}</b></div>`).join('')}</div>
+      <div class="info-grid">
+        <div><small>الاسم</small><b>${o.name}</b></div>
+        <div><small>الاستلام</small><b>${type === 'delivery' ? '🛵 توصيل' + (o.district ? ' – حي ' + o.district : '') : '🏪 من الفرع'}</b></div>
+        <div><small>الدفع</small><b>💵 عند الاستلام</b></div>
+        <div><small>المبلغ المستحق</small><b style="color:var(--red)">${money(o.total)}</b></div>
+      </div>
+      ${idx < 3 ? '<div class="refresh"><span class="dot-live"></span>يتم تحديث الحالة تلقائيًا</div>' : ''}
+    </div>`;
+  if (html !== render.last) { $('#result').innerHTML = html; render.last = html; }
+}
+
+$('#searchForm').addEventListener('submit', e => {
+  e.preventDefault();
+  const no = clean($('#qNo').value), phone = clean($('#qPhone').value);
+  $('#qNo').parentElement.classList.toggle('err', !no);
+  if (!no) return;
+  current = { no, phone };
+  history.replaceState(null, '', '?no=' + no);
+  render();
+});
+
+// Recent orders on this device (handy for the demo)
+const recent = store.get(ORDERS_KEY, []).slice(0, 3);
+if (recent.length) $('#recent').innerHTML = 'طلباتك الأخيرة: ' + recent.map(o => `<button data-no="${clean(o.no)}">${o.no}</button>`).join('');
+$('#recent').onclick = e => { const b = e.target.closest('[data-no]'); if (!b) return; $('#qNo').value = b.dataset.no; $('#qPhone').value = ''; $('#searchForm').requestSubmit(); };
+
+// Open directly from the success screen: track.html?no=12345
+const pre = clean(new URLSearchParams(location.search).get('no'));
+if (pre) { $('#qNo').value = pre; current = { no: pre, phone: '' }; render(); }
+
+// Live updates: status changes from the admin page (other tab) or every 5s
+window.addEventListener('storage', e => { if (e.key === ORDERS_KEY) render(); });
+setInterval(render, 5000);
+</script>
+</body>
+</html>

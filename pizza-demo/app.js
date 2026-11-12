@@ -217,7 +217,8 @@ function placeOrder() {
         ${order.items.map(i => `<div class="r"><span>${i.qty}× ${i.name}</span><b>${money(i.price)}</b></div>`).join('')}
         <div class="r" style="border-top:1px solid var(--line);margin-top:6px;padding-top:8px"><span>المبلغ المستحق (الدفع عند الاستلام)</span><b style="color:var(--red)">${money(order.total)}</b></div>
       </div>
-      <button class="btn btn-primary w100" id="backHome">العودة للقائمة</button>`;
+      <a class="btn btn-dark w100" style="margin-bottom:10px" href="track.html?no=${order.no.replace('#', '')}">🛵 تتبع طلبك</a>
+      <button class="btn btn-light w100" id="backHome">العودة للقائمة</button>`;
     $('#success').classList.add('show'); document.body.classList.add('lock');
     $('#backHome').onclick = () => { $('#success').classList.remove('show'); document.body.classList.remove('lock'); scrollTo(0, 0); };
   }, 1000);

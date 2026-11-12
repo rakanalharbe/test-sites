@@ -224,3 +224,4 @@ footer .logo{color:#fff}
 .o-card .meta{font-size:.82rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:8px}
 .o-card .act{margin-top:10px;width:100%;padding:8px;border-radius:10px;background:var(--dark);color:#fff;font-weight:700;font-size:.85rem}
 .o-card .act:hover{background:var(--red)}
+@media(max-width:520px){.hide-sm{display:none}}
